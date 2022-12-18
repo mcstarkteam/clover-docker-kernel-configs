@@ -33,21 +33,16 @@ wget https://raw.githubusercontent.com/neoterm-extra/clover-docker-kernel-config
 wget https://raw.githubusercontent.com/neoterm-extra/clover-docker-kernel-configs/main/clover_docker -O kernel/arch/arm64/configs/clover_defconfig
 
 echo "下载编译器"
-wget https://imola.armbian.com/dl/_toolchain/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz
-tar xvf *.xz
-mv gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu toolchains
-rm *.xz
-wget https://imola.armbian.com/dl/_toolchain/gcc-arm-11.2-2022.02-x86_64-arm-none-eabi.tar.xz
-tar xvf *.xz
-mv gcc-arm-11.2-2022.02-x86_64-arm-none-eabi toolchains-arm32
-rm *.xz
-
+wget https://github.com/kdrag0n/proton-clang/archive/refs/tags/20200606.tar.gz
+tar zxvf *.gz
+mv proton-clang-20200606 toolchains
+rm *.gz
 #设置环境
 echo "设置编译环境"
 export ARCH=arm64
 export SUBARCH=arm64
-export CROSS_COMPILE=/root/kbuild/toolchains/bin/aarch64-none-linux-gnu-
-export CROSS_COMPILE_ARM32=/root/kbuild/toolchains32/bin/arm-none-eabi-
+export CROSS_COMPILE=/root/kbuild/toolchains/bin/aarch64-linux-gnu-
+export CROSS_COMPILE_ARM32=/root/kbuild/toolchains/bin/arm-linux-gnueabi-
 #完成
 
 #echo "降低 gcc 编译器版本"
