@@ -27,14 +27,19 @@ git clone https://github.com/xiaomi-sdm660/android_kernel_xiaomi_sdm660 -b 10.0-
 echo "PATCH内核源码"
 rm kernel/kernel/Makefile
 rm kernel/net/netfilter/xt_qtaguid.c
+rm kernel/arch/arm64/configs/clover_defconfig
 wget https://raw.githubusercontent.com/neoterm-extra/clover-docker-kernel-configs/main/Makefile -O kernel/kernel/Makefile
 wget https://raw.githubusercontent.com/neoterm-extra/clover-docker-kernel-configs/main/xt_qtaguid.c -O kernel/net/netfilter/xt_qtaguid.c
-wget https://raw.githubusercontent.com/neoterm-extra/clover-docker-kernel-configs/main/clover_docker -O kernel/arch/arm64/configs/clover_docker
+wget https://raw.githubusercontent.com/neoterm-extra/clover-docker-kernel-configs/main/clover_docker -O kernel/arch/arm64/configs/clover_defconfig
 
 echo "下载编译器"
-wget https://imola.armbian.com/dl/_toolchain/gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu.tar.xz
+wget https://imola.armbian.com/dl/_toolchain/gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu.tar.xz
 tar xvf *.xz
-mv gcc-arm-9.2-2019.12-x86_64-aarch64-none-linux-gnu toolchains
+mv gcc-arm-11.2-2022.02-x86_64-aarch64-none-linux-gnu toolchains
+rm *.xz
+wget https://imola.armbian.com/dl/_toolchain/gcc-arm-11.2-2022.02-x86_64-arm-none-eabi.tar.xz
+tar xvf *.xz
+mv gcc-arm-11.2-2022.02-x86_64-arm-none-eabi toolchains-arm32
 rm *.xz
 
 #设置环境
@@ -42,15 +47,16 @@ echo "设置编译环境"
 export ARCH=arm64
 export SUBARCH=arm64
 export CROSS_COMPILE=/root/kbuild/toolchains/bin/aarch64-none-linux-gnu-
+export CROSS_COMPILE_ARM32=/root/kbuild/toolchains32/bin/arm-none-eabi-
 #完成
 
-echo "降低 gcc 编译器版本"
-update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
-update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 100
+#echo "降低 gcc 编译器版本"
+#update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100
+#update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 100
 
 echo "开始编译"
 cd kernel
-make O=out clover_docker
+make O=out clover_defconfig
 cd out
 make -j8
 echo "编译完成"
